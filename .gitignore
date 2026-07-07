@@ -58,3 +58,6 @@ app.*.map.json
 
 # Local properties (SDK path configuration)
 local.properties
+
+# 公众号投稿文章(仅本地, 不提交GitHub)
+公众号文章_*.md
