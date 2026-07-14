@@ -17,9 +17,42 @@ import 'package:course_manager/dialogs/add_reminder_dialog.dart';
 /// S8 书包准备页面（书包Tab首页）
 /// 包含书包准备清单 + 提醒列表两部分
 /// 修复：提醒区域始终可见，不依赖书包物品是否为空
+/// 修复：不要在 build 中调用 generateSuggestionsForTomorrow，避免通知调度紊乱导致复选框不刷新
 
-class BackpackScreen extends StatelessWidget {
+class BackpackScreen extends StatefulWidget {
   const BackpackScreen({super.key});
+
+  @override
+  State<BackpackScreen> createState() => _BackpackScreenState();
+}
+
+class _BackpackScreenState extends State<BackpackScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // 在首帧渲染完成后生成明天的书包建议，避免在 build 过程中调用 notifyListeners
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _generateSuggestionsForTomorrow();
+    });
+  }
+
+  void _generateSuggestionsForTomorrow() {
+    final backpackProvider = context.read<BackpackProvider>();
+    final scheduleProvider = context.read<ScheduleProvider>();
+    final semesterProvider = context.read<SemesterProvider>();
+    final studentProvider = context.read<StudentProvider>();
+
+    final activeStudent = studentProvider.activeStudent;
+    final activeSemester = semesterProvider.activeSemester;
+
+    if (activeStudent != null && activeSemester != null) {
+      backpackProvider.generateSuggestionsForTomorrow(
+        activeStudent.id,
+        activeSemester.id,
+        scheduleProvider.schedules,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +60,6 @@ class BackpackScreen extends StatelessWidget {
     final backpackProvider = context.watch<BackpackProvider>();
     final reminderProvider = context.watch<ReminderProvider>();
     final themeProvider = context.watch<ThemeProvider>();
-    final scheduleProvider = context.read<ScheduleProvider>();
-    final semesterProvider = context.read<SemesterProvider>();
 
     final bgColor = themeProvider.bgColor;
 
@@ -40,16 +71,6 @@ class BackpackScreen extends StatelessWidget {
         backgroundColor: bgColor,
         appBar: AppBar(title: const Text('书包准备')),
         body: const BackpackEmptyState(),
-      );
-    }
-
-    // 自动生成明天的书包建议（基于课表）
-    final activeSemester = semesterProvider.activeSemester;
-    if (activeSemester != null) {
-      backpackProvider.generateSuggestionsForTomorrow(
-        activeStudent.id,
-        activeSemester.id,
-        scheduleProvider.schedules,
       );
     }
 

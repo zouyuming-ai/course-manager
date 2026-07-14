@@ -1,6 +1,6 @@
 name: course_manager
 description: 课程小管家 - 小学家长课表管理App
-version: 1.0.25+25
+version: 1.0.26+26
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

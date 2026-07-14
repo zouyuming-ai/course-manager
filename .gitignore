@@ -56,8 +56,15 @@ app.*.map.json
 *_private.md
 .gitignore_private
 
-# Local properties (SDK path configuration)
+# Local properties & keystore (sensitive, do not commit)
 local.properties
+android/keystore.properties
+android/keystore/
+
+# Build caches
+.gradle/
+.pub_cache/
+local-maven-repo/
 
 # 公众号投稿文章(仅本地, 不提交GitHub)
 公众号文章_*.md

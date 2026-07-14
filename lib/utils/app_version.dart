@@ -5,9 +5,9 @@
 class AppVersion {
   /// 版本号字符串，用于设置页和关于对话框
   /// 与 pubspec.yaml version 字段保持一致
-  static const String version = 'v1.0.25';
-  static const int buildNumber = 25;
+  static const String version = 'v1.0.26';
+  static const int buildNumber = 26;
 
   /// 完整版本字符串
-  static const String fullVersion = 'v1.0.25 (25)';
+  static const String fullVersion = 'v1.0.26 (26)';
 }
